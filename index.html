@@ -1,0 +1,349 @@
+<!--
+Filename: styling-responsiveness-demo.html
+A single-file demo that contains: Login, Dashboard and Quiz pages + responsive CSS and minimal JS.
+Copy-paste into your repo (e.g., /frontend/static/) or split into index.html + styles.css + app.js.
+Adapt the placeholders (API endpoints) to your backend.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EcoPlay — Styling & Responsiveness Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =====================
+       Theme / Reset
+       ===================== */
+    :root{
+      --bg: #f6fbf5;
+      --card-bg: #ffffff;
+      --accent: #2d7a2e; /* eco green */
+      --accent-600: #276024;
+      --muted: #6b7280;
+      --danger: #e02424;
+      --glass: rgba(255,255,255,0.6);
+      --radius: 12px;
+      --container-max: 1100px;
+      --gap: 1rem;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg), #eef7ec 40%);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      padding:1rem;
+    }
+
+    .container{max-width:var(--container-max);margin:0 auto;padding:1rem}
+
+    /* =====================
+       Header / Nav
+       ===================== */
+    header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0}
+    .brand{display:flex;align-items:center;gap:.6rem}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#77b36b);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav{display:flex;gap:1rem;align-items:center}
+    .nav-links{display:none}
+    .hamburger{display:block;border:none;background:none;font-size:1.2rem}
+
+    /* Buttons */
+    .btn{display:inline-block;padding:.5rem .9rem;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-ghost{background:transparent;border:1px solid rgba(15,23,42,0.06)}
+
+    /* =====================
+       Cards & Utilities
+       ===================== */
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 6px 18px rgba(15,23,42,0.05);padding:1rem}
+    .row{display:flex;gap:var(--gap);align-items:center}
+    .col{flex:1}
+    .muted{color:var(--muted)}
+
+    /* Responsive grid helper */
+    .grid{display:grid;gap:var(--gap)}
+    .grid-2{grid-template-columns:1fr}
+
+    /* =====================
+       Login Page
+       ===================== */
+    .auth-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
+    .auth-box{max-width:420px;width:100%}
+    form .field{display:flex;flex-direction:column;margin-bottom:.8rem}
+    label{font-size:.9rem;margin-bottom:.25rem}
+    input[type="text"],input[type="password"],input[type="email"]{padding:.7rem .8rem;border-radius:8px;border:1px solid #e6eef0;background:linear-gradient(180deg,white,#fbfdfb)}
+    input:focus{outline:3px solid rgba(39,96,36,0.12);border-color:var(--accent-600)}
+
+    /* =====================
+       Dashboard
+       ===================== */
+    .dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .points{display:flex;align-items:center;gap:.6rem}
+    .points .value{font-size:1.4rem;font-weight:700}
+
+    .cards{display:grid;grid-template-columns:1fr;gap:var(--gap)}
+    .badges{display:flex;gap:.5rem;flex-wrap:wrap}
+    .badge{background:var(--glass);padding:.35rem .6rem;border-radius:999px;border:1px solid rgba(15,23,42,0.05);font-weight:600}
+
+    .challenge{display:flex;align-items:center;justify-content:space-between;padding:.6rem;border-radius:10px;border:1px dashed rgba(39,122,46,0.08)}
+
+    /* Leaderboard */
+    .leaderboard ul{list-style:none;padding:0;margin:0}
+    .leaderboard li{display:flex;justify-content:space-between;padding:.5rem .4rem}
+
+    /* =====================
+       Quiz
+       ===================== */
+    .quiz-wrap{max-width:760px;margin:0 auto}
+    .question{font-weight:600;margin-bottom:.6rem}
+    .options{display:grid;gap:.5rem}
+    .option{padding:.7rem;border-radius:10px;border:1px solid rgba(15,23,42,0.06);cursor:pointer}
+    .option input{display:none}
+    .option.selected{background:linear-gradient(90deg,rgba(39,122,46,0.06),rgba(39,122,46,0.03));border-color:var(--accent)}
+
+    .progress{height:12px;border-radius:999px;background:#e6efdf;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#77b36b);width:40%}
+
+    /* =====================
+       Small devices -> larger
+       ===================== */
+    @media(min-width:640px){
+      .nav-links{display:flex}
+      .hamburger{display:none}
+      .grid-2{grid-template-columns:repeat(2,1fr)}
+      .cards{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media(min-width:1024px){
+      body{padding:2rem}
+      .container{padding:2rem}
+      .card{padding:1.2rem}
+      .grid-2{grid-template-columns:2fr 1fr}
+    }
+
+    /* Accessibility preference */
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <div class="brand">
+      <div class="logo">EP</div>
+      <div>
+        <strong>EcoPlay</strong>
+        <div class="muted" style="font-size:.85rem">Gamified environmental learning</div>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-links muted">
+        <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+        <a href="#" onclick="showSection('quiz')">Quizzes</a>
+      </div>
+      <button class="hamburger" aria-label="menu" onclick="toggleNav()">☰</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- LOGIN -->
+    <section id="login" class="auth-wrap">
+      <div class="auth-box card">
+        <h2>Welcome to EcoPlay</h2>
+        <p class="muted">Sign in to track points, earn badges, and join competitions.</p>
+        <form id="loginForm">
+          <div class="field">
+            <label for="email">School email</label>
+            <input id="email" name="email" type="email" placeholder="name@school.edu" required />
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="••••••" required />
+          </div>
+          <div style="display:flex;gap:.6rem;align-items:center;justify-content:space-between">
+            <button class="btn btn-primary" type="submit">Sign in</button>
+            <button class="btn btn-ghost" type="button" onclick="demoLogin()">Try demo</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" style="display:none">
+      <div class="dashboard-head">
+        <div>
+          <h2>Hello, <span id="displayName">Student</span></h2>
+          <div class="muted">Keep learning — your actions matter!</div>
+        </div>
+        <div class="points card">
+          <div style="text-align:right">
+            <div class="muted">Eco Points</div>
+            <div class="value" id="ecoPoints">120</div>
+            <div class="muted" style="font-size:.82rem">Rank: <strong>#12</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid cards">
+        <div class="card">
+          <h3 style="margin-top:0">Today's Challenge</h3>
+          <div class="challenge">
+            <div>
+              <div><strong>Use a reusable water bottle</strong></div>
+              <div class="muted" style="font-size:.9rem">Complete this task to earn 10 points</div>
+            </div>
+            <button class="btn btn-primary" onclick="completeChallenge()">Mark done</button>
+          </div>
+
+          <h4 style="margin-top:1rem">Badges</h4>
+          <div class="badges" id="badgeList">
+            <div class="badge">Starter</div>
+            <div class="badge">Tree Planter</div>
+          </div>
+        </div>
+
+        <aside class="card">
+          <h3 style="margin-top:0">Leaderboard</h3>
+          <div class="leaderboard">
+            <ul id="leaderboardList">
+              <li><span>Rahul</span><strong>420</strong></li>
+              <li><span>Priya</span><strong>390</strong></li>
+              <li><span>You</span><strong>120</strong></li>
+            </ul>
+          </div>
+
+          <h4 style="margin-top:1rem">Progress</h4>
+          <div class="muted" style="font-size:.9rem;margin-bottom:.3rem">Monthly activity</div>
+          <div class="progress card"><i style="width:40%"></i></div>
+        </aside>
+      </div>
+
+      <div style="margin-top:1rem;text-align:center">
+        <button class="btn btn-primary" onclick="showSection('quiz')">Take a quiz</button>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" style="display:none">
+      <div class="quiz-wrap">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Quiz: Plastic Pollution</h3>
+            <div class="muted">Score: <strong id="quizScore">0</strong></div>
+          </div>
+
+          <div style="margin-top:.8rem">
+            <div class="progress" aria-hidden="true"><i id="quizProgressBar" style="width:0%"></i></div>
+          </div>
+
+          <div id="questionArea" style="margin-top:1rem"></div>
+
+          <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="prevQ()">Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">Next</button>
+          </div>
+
+          <div id="quizResult" style="display:none;margin-top:1rem" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="container" style="margin-top:2rem;text-align:center;font-size:.9rem;color:var(--muted)">Made with ♻️ — EcoPlay demo</footer>
+
+  <script>
+    // ------------------
+    // Demo app state + simple behaviour
+    // ------------------
+    const sections = {login:document.getElementById('login'),dashboard:document.getElementById('dashboard'),quiz:document.getElementById('quiz')}
+    function showSection(name){Object.values(sections).forEach(s=>s.style.display='none');sections[name].style.display='block';window.scrollTo(0,0)}
+
+    // Toggle mobile menu (demo)
+    function toggleNav(){alert('Use the links in header on wider screens — this is demo UI.');}
+
+    // Demo login flow — replace with actual API call to your backend
+    const loginForm=document.getElementById('loginForm')
+    loginForm.addEventListener('submit',function(e){e.preventDefault();handleLogin()})
+    function demoLogin(){document.getElementById('email').value='demo@school.edu';document.getElementById('password').value='demo';handleLogin()}
+    function handleLogin(){
+      const name = document.getElementById('email').value.split('@')[0] || 'Student'
+      document.getElementById('displayName').textContent = name.charAt(0).toUpperCase()+name.slice(1)
+      // TODO: call your login API here: fetch('/api/login', {method:'POST', body:...})
+      showSection('dashboard')
+    }
+
+    // Demo challenge completion
+    function completeChallenge(){
+      const pts = document.getElementById('ecoPoints')
+      pts.textContent = Number(pts.textContent) + 10
+      const badgeList = document.getElementById('badgeList')
+      const b = document.createElement('div');b.className='badge';b.textContent='Hydration Hero'
+      badgeList.appendChild(b)
+    }
+
+    // Simple quiz demo data
+    const quiz = [
+      {q:'Which material takes longest to degrade?',options:['Paper','Glass','Banana peel','Cotton'],answer:1},
+      {q:'Which is best to reduce single-use plastic?',options:['Recycle it','Use reusable alternatives','Burn it','Bury it'],answer:1},
+      {q:'What is composting?',options:['A form of recycling','Turning organic waste into soil','A way to burn trash','None of these'],answer:1}
+    ]
+    let idx=0,score=0
+    const qArea=document.getElementById('questionArea')
+    function renderQuestion(){
+      const item = quiz[idx]
+      qArea.innerHTML = ''
+      const qEl = document.createElement('div')
+      qEl.innerHTML = `<div class="question">${idx+1}. ${item.q}</div>`
+      const opts = document.createElement('div');opts.className='options'
+      item.options.forEach((opt,i)=>{
+        const label = document.createElement('label');label.className='option';label.tabIndex=0
+        label.innerHTML = `<input type="radio" name="opt" value="${i}"> <span>${opt}</span>`
+        label.addEventListener('click',()=>{
+          // clear other selections
+          document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'))
+          label.classList.add('selected')
+        })
+        opts.appendChild(label)
+      })
+      qEl.appendChild(opts)
+      qArea.appendChild(qEl)
+      document.getElementById('quizProgressBar').style.width = `${Math.round((idx/quiz.length)*100)}%`
+    }
+    function nextQ(){
+      const sel = document.querySelector('input[name="opt"]:checked')
+      if(!sel){alert('Please choose an answer.');return}
+      const chosen = Number(sel.value)
+      if(chosen === quiz[idx].answer) score += 10
+      idx++
+      if(idx >= quiz.length){showResult();return}
+      renderQuestion()
+      document.getElementById('quizScore').textContent = score
+    }
+    function prevQ(){ if(idx>0){idx--;renderQuestion();document.getElementById('quizScore').textContent=score} }
+    function showResult(){
+      document.getElementById('quizProgressBar').style.width = '100%'
+      const res = document.getElementById('quizResult')
+      res.style.display = 'block'
+      res.className = 'card'
+      res.innerHTML = `<h4>Quiz finished</h4><p class='muted'>Your score: <strong>${score}</strong></p><p>Great job! Earned points will be added to your profile.</p>`
+      // Here: call backend to store score: fetch('/api/quiz/submit', ...)
+      // Update eco points demo
+      const pts=document.getElementById('ecoPoints');pts.textContent = Number(pts.textContent) + score
+    }
+
+    // Initial render: keep login visible
+    renderQuestion()
+
+    // For demo convenience: if you open this file directly and want to jump to dashboard, call showSection('dashboard') in console
+  </script>
+</body>
+</html>
